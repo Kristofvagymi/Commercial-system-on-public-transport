@@ -2,7 +2,6 @@ var express = require('express');
 var userRouter = require('./01_api/user-routing.js');
 const bodyParser = require("body-parser");
 
-
 const app = express();
 
 // parse requests of content-type - application/json
