@@ -1,4 +1,8 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
 
-createApp(App).mount('#app')
+Vue.config.productionTip = false
+alert(`Vue version : ${Vue.version}`);
+new Vue({
+  render: h => h(App),
+}).$mount('#app')
