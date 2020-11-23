@@ -4,11 +4,11 @@
       <h3>Sign In</h3>
 
       <b-form-group label="Username">
-        <b-form-input required/>
+        <b-form-input required v-model="login.username"/>
       </b-form-group>
 
       <b-form-group label="Password">
-        <b-form-input type="password" required />
+        <b-form-input type="password" required v-model="login.password"/>
       </b-form-group>
 
       <b-button type="submit" variant="primary" class="w-100 btn-dark">
@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       login: {
-        email: "",
+        username: "",
         password: ""
       }
     };
@@ -42,8 +42,7 @@ export default {
           this.$router.push("/dashboard");
         }
       } catch (err) {
-        swal("Error", "Something Went Wrong", "error");
-        console.log(err.response);
+        swal("Error", err.response.data.error, "error");
       }
     }
   }
