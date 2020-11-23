@@ -19,6 +19,13 @@ mongoose
     console.log(transport_admin);
     console.log(commercial_admin);
     console.log(advertiser);
+    try{
+      transport_admin.save()
+      commercial_admin.save()
+      advertiser.save()
+    } catch(err){
+      console.log(err)
+    }
 
   })
   .catch(err => {
