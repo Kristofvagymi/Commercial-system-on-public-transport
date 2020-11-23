@@ -6,7 +6,8 @@ const config = require("../04_config/db.config");
 const userSchema = mongoose.Schema({
   username: {
     type: String,
-    required: [true, "Please Include your name"]
+    required: [true, "Please Include your name"],
+    unique: true
   },
   password: {
     type: String,
@@ -71,5 +72,5 @@ userSchema.statics.findByCredentials = async (username, password) => {
   return user;
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema, "User");
 module.exports = User;
