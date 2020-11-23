@@ -9,15 +9,15 @@ router.post("/createUser", auth.loggedIn, auth.commercial_admin , (req, res) => 
 });
 
 router.post("/login", (req, res) => {
-   res.json({ message: "Welcome to public commercial application." });
+   userService.loginUser(req, res);
 });
 
 router.post("/blockUserByName", auth.loggedIn, auth.commercial_admin, (req, res) => {
-   res.json({ message: "Welcome to public commercial application." });
+   userService.blockUserByName(req, res);
 });
 
 router.post("/enableUserByName", auth.loggedIn, auth.commercial_admin, (req, res) => {
-   res.json({ message: "Welcome to public commercial application." });
+   userService.enableUserByName(req, res);
 });
 
 router.post("/logout", auth.loggedIn, (req, res) => {
@@ -25,7 +25,7 @@ router.post("/logout", auth.loggedIn, (req, res) => {
 });
 
 router.get("/users", auth.loggedIn, auth.commercial_admin , (req, res) => {
-   res.json({ message: "Welcome to public commercial application." });
+   userService.getUsers(req, res);
 });
 
 module.exports = router;

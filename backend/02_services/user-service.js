@@ -20,9 +20,9 @@ exports.createUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
     try {
-      const email = req.body.email;
+      const username = req.body.username;
       const password = req.body.password;
-      const user = await User.findByCredentials(email, password);
+      const user = await User.findByCredentials(username, password);
       if (!user) {
         return res.status(401).json({ error: "Login failed! Check authentication credentials" });
       }
@@ -32,3 +32,56 @@ exports.loginUser = async (req, res) => {
       res.status(400).json({ err: err });
     }
   };
+
+exports.blockUserByName = async (req, res) => {
+  try{
+    User.findOne({username: req.body.username}).then((user) => {
+      if(!user){
+        throw new Error({ error: "User exists with given username." });
+      }
+      user.blocked = true;
+      user.save();
+    })
+  } catch (err) {
+    res.status(400).json({ err: err });
+  }
+}
+
+exports.enableUserByName = async (req, res) => {
+  try{
+    User.findOne({username: req.body.username}).then((user) => {
+      if(!user){
+        throw new Error({ error: "User exists with given username." });
+      }
+      user.blocked = false;
+      user.save();
+    })
+  } catch (err) {
+    res.status(400).json({ err: err });
+  }
+}
+
+exports.enableUserByName = async (req, res) => {
+  try{
+    User.findOne({username: req.body.username}).then((user) => {
+      if(!user){
+        throw new Error({ error: "User exists with given username." });
+      }
+      user.blocked = false;
+      user.save();
+    })
+  } catch (err) {
+    res.status(400).json({ err: err });
+  }
+}
+
+
+exports.getUsers = async (req, res) => {
+  try{
+    User.find().then((users) => {
+      res.json({ users: users });
+    })
+  } catch (err) {
+    res.status(400).json({ err: err });
+  }
+}
