@@ -4,7 +4,7 @@ const adService = require("../02_services/ad-service");
 
 var router = express.Router();
 
-router.post("/", auth.loggedIn, (req, res) => {
+router.post("/", (req, res) => {
     adService.createAd(req,res);
 });
 

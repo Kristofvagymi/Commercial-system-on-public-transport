@@ -23,9 +23,12 @@ exports.getCustomAdvertisement = async (req, res) => {
 
 exports.createAd = async (req, res) => {
     try{
-        // TODO: Save to file
-        const ad = new Advertisement(req.body);
-        ad.save();
+
+      // TODO: Save to file
+      //const ad = new Advertisement(req.body);
+      //ad.save();
+      
+      res.status(200).json({ sdfs: "asd" });
     } catch (err) {
       res.status(400).json({ err: err });
     }

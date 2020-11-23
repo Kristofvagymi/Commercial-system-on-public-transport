@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const adSchema = mongoose.Schema({
-
     country: {
       type: String,
       required: [true, "Please Include countries."]

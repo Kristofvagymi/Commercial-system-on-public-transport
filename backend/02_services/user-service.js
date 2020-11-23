@@ -74,7 +74,7 @@ exports.enableUserByName = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try{
-    User.find().then((users) => {
+    User.find({blockable: true}).then((users) => {
       res.json({ users: users });
     })
   } catch (err) {

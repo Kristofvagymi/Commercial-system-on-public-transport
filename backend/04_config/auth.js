@@ -6,7 +6,7 @@ exports.loggedIn = (req, res, next) => {
     const token = req.headers.authorization.replace("Bearer ", "");
     console.log(token);
     const decoded = jwt.verify(token, config.secret);
-    req.userData = decoded;
+    req.user = decoded;
     next();
   } catch (err) {
     return res.status(401).json({
