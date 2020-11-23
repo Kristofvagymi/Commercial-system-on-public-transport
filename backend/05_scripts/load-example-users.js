@@ -18,9 +18,6 @@ function loadUsers(){
     const advertiser = new User({username: 'advertiser', password: 'pw', role: 'advertiser', money: 0, blockable: true});
 
     console.log('default users:\n');
-    /*console.log(transport_admin);
-    console.log(commercial_admin);
-    console.log(advertiser);*/
 
     transport_admin.save(function (err, saved) {
         if (err) console.log(err);
