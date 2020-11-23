@@ -10,7 +10,7 @@ const adRouter = require('./01_api/ad-routing.js');
 const app = express();
 
 mongoose
-  .connect(config.url, { useNewUrlParser: true })
+  .connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("Database is connected");
   })
@@ -20,7 +20,8 @@ mongoose
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
 
