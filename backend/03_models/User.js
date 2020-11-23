@@ -15,6 +15,7 @@ const userSchema = mongoose.Schema({
   role: {
     enum : [ 'transport_admin', 'commercial_admin', 'advertiser' ],
     default: 'advertiser',
+    type: String,
     required: [true, "Please Include role"]
   },
   money: {

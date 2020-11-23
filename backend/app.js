@@ -3,12 +3,13 @@ const userRouter = require('./01_api/user-routing.js');
 const bodyParser = require("body-parser");
 const config = require("./04_config/db.config");
 const User = require("./03_models/User");
+const mongoose = require("mongoose");
 
 const app = express();
 
 mongoose.set("useCreateIndex", true);
 mongoose
-  .connect(config.database, { useNewUrlParser: true })
+  .connect(config.url, { useNewUrlParser: true })
   .then(() => {
     console.log("Database is connected");
     const transport_admin = new User({username: 'transport_admin', password: 'pw', role: 'transport_admin', money: 0, blockable: false});
