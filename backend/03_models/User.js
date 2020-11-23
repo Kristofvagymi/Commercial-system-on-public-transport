@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
     required: [true, "Please Include your password"]
   },
   role: {
-    enum : [ 'transport_admin', 'commercial_admin', 'advertiser' ],
+    enum : [ 'transport_admin', 'commercial_admin', 'advertiser', 'service' ],
     default: 'advertiser',
     type: String,
     required: [true, "Please Include role"]
@@ -63,11 +63,11 @@ userSchema.methods.generateAuthToken = async function() {
 userSchema.statics.findByCredentials = async (username, password) => {
   const user = await User.findOne({ username });
   if (!user) {
-    throw new Error({ error: "Invalid login details" });
+    throw new Error({ error: "Invalid login details." });
   }
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
-    throw new Error({ error: "Invalid login details" });
+    throw new Error({ error: "Invalid login details." });
   }
   return user;
 };

@@ -28,3 +28,10 @@ exports.transport_admin = async function (req, res, next) {
     }  
     next();
 }
+
+exports.service = async function (req, res, next) {
+  if( !req.user.role === 'service' ){
+      return res.status(401).send("Access Denied");
+  }  
+  next();
+}

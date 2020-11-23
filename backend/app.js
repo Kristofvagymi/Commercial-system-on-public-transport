@@ -1,9 +1,11 @@
 const express = require('express');
-const userRouter = require('./01_api/user-routing.js');
 const bodyParser = require("body-parser");
 const config = require("./04_config/db.config");
-const User = require("./03_models/User");
 const mongoose = require("mongoose");
+
+const userRouter = require('./01_api/user-routing.js');
+const vehicleRouter = require('./01_api/vehicle-routing.js');
+const adRouter = require('./01_api/ad-routing.js');
 
 const app = express();
 
@@ -23,7 +25,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // router for user path
 app.use('/user', userRouter);
-
+app.use('/vehicle', vehicleRouter);
+app.use('/advertisement', adRouter);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8090;
