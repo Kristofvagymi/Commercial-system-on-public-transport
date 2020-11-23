@@ -16,6 +16,7 @@ function loadUsers(){
     const transport_admin = new User({username: 'transport_admin', password: 'pw', role: 'transport_admin', money: 0, blockable: false});
     const commercial_admin = new User({username: 'commercial_admin', password: 'pw', role: 'commercial_admin', money: 0, blockable: false});
     const advertiser = new User({username: 'advertiser', password: 'pw', role: 'advertiser', money: 0, blockable: true});
+    const service = new User({username: 'service', password: 'pw', role: 'service', money: 0, blockable: true});
 
     console.log('default users:\n');
 
@@ -31,5 +32,9 @@ function loadUsers(){
         if (err) console.log(err);
         else console.log(saved)
     })
+    service.save(function (err, saved) {
+      if (err) console.log(err);
+      else console.log(saved)
+  })
 
 }

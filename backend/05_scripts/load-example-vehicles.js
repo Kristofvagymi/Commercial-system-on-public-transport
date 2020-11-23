@@ -6,13 +6,13 @@ mongoose
   .connect(config.url, { useNewUrlParser: true })
   .then(() => {
     console.log("Database is connected");
-    loadUsers();
+    loadvehicles();
   })
   .catch(err => {
     console.log({ database_error: err });
   });
 
-function loadUsers(){
+function loadvehicles(){
     const vehicle1 = new Vehicle({registrationNumber: 'ABC-123', countries: []});
     const vehicle2 = new Vehicle({registrationNumber: 'SEX-420', countries: [{country: "Pest"}]});
     const vehicle3 = new Vehicle({registrationNumber: 'LOL-000', countries: [{country: "Pest"}, {country: "Baranya"}]});
