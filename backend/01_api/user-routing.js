@@ -20,10 +20,6 @@ router.post("/enableUserByName", auth.loggedIn, auth.commercial_admin, (req, res
    userService.enableUserByName(req, res);
 });
 
-router.post("/logout", auth.loggedIn, (req, res) => {
-   res.json({ message: "Welcome to public commercial application." });
-});
-
 router.get("/users", auth.loggedIn, auth.commercial_admin , (req, res) => {
    userService.getUsers(req, res);
 });
