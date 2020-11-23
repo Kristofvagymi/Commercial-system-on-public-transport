@@ -1,47 +1,48 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import Dashboard from '@/dashboard/Dashboard.vue'
-import Login from '@/login/Login.vue'
+import VueRouter from 'vue-router'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-const ifNotAuthenticated = (to, from, next) => {
-    if (!store.getters.isAuthenticated) {
-      next()
-      return
-    }
-    next('/dashboard')
-  }
-  
-  const ifAuthenticated = (to, from, next) => {
-    if (store.getters.isAuthenticated) {
-      next()
-      return
-    }
-    next('/login')
-  }
-  
-
-export default new Router({
-    mode: 'history',
-    routes: [
-        {
-            path: '/',
-            redirect: {
-                name: "Dashboard"
-            }
-        },
-        {
-            path: '/dashboard',
-            name: 'Dashboard',
-            component: Dashboard,
-            beforeEnter: ifAuthenticated
-        },
-        {
-            path: '/login',
-            name: 'Login',
-            component: Login,
-            beforeEnter: ifNotAuthenticated
+const routes = [
+    {
+        path: '/',
+        redirect: {
+            name: "Dashboard"
         }
-    ]
-})
+    },
+    {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import("@/views/Dashboard.vue"),
+        meta: {
+          requiresAuth: true
+        }        
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import("@/views/Login.vue")
+    }
+]
+
+const router = new VueRouter({
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem("jwt") == null) {
+      next({
+        path: "/login"
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
+export default router;
