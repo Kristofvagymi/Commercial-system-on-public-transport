@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
       advertiser component
   </div>
 </template>

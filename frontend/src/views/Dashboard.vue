@@ -42,7 +42,6 @@ export default {
 
   created() {
     this.getUserDetails();
-    console.log(this.user)
   },
   components:{
     AdvertiserComponent,
