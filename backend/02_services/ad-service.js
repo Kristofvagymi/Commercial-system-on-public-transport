@@ -14,13 +14,12 @@ exports.getAdvertisements = async (req, res) => {
 
 exports.getCustomAdvertisement = async (req, res) => {
     try{
-        let {hours, minutes} = req.body.timeStamp
+        let hours = req.body.hours
         let regNum = req.body.regNum
+        let vehicle = await Vehicle.findOne({registrationNumber: regNum},{ strict: false }).lean();
 
-        let vehicle = await Vehicle.find({registrationNumber: regNum});
-
-        Advertisement.find({countries: {$in: vehicle.countries}, from: {}, to: {} }).then((advertisements) => {
-            res.json({ advertisement: advertisements[0] });
+        Advertisement.find({countries: {$in: vehicle.countries},"from.hours": {$gte : hours} , "to.hours"  : {$lte : hours} }).then((advertisements) => {
+            res.json({ advertisements: advertisements });
       })
     } catch (err) {
       res.status(400).json({ err: err });

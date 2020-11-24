@@ -13,13 +13,21 @@ mongoose
   });
 
 function loadAdvertisement(){
-    const ad = new Advertisement({country: 'Pest', title: 'Knorr', from: {hours: 12, minutes: 30}, to: {hours: 12, minutes: 30}, pictures: [{path: "/example-ad/example.jpg"}] });
 
-    console.log('default ads:\n');
+  // Query from frontend
+  /*
+  const formData = new FormData();
+  formData.append('file', this.file);
+  formData.append('ad', JSON.stringify({countries: ['Pest'], title: 'Domestoas', from: {hours: 12}, to: {hours: 12}}));
+  */
 
-    ad.save(function (err, saved) {
-        if (err) console.log(err);
-        else console.log(saved)
-    });
+  const ad = new Advertisement({countries: ['Pest'], title: 'Domestos', from: {hours: 12}, to: {hours: 12}, path: "./99_uploads/TEST/", fileName: "dom.jpg"});
+
+  console.log('default ads:\n');
+
+  ad.save(function (err, saved) {
+      if (err) console.log(err);
+      else console.log(saved)
+  });
 
 }

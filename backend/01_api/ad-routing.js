@@ -8,8 +8,6 @@ var router = express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        req.user = {}
-        req.user.username = 'TEST'
         const path = `./99_uploads/${req.user.username}/`
         req.body.path = path
         req.body.fileName = file.originalname
@@ -29,15 +27,15 @@ const fileFilter = (req, file, cb) => {
 }
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-router.post("/", upload.single('file'), (req, res) => {
+router.post("/", auth.loggedIn, upload.single('file'), (req, res) => {
     adService.createAd(req,res);
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", auth.loggedIn, auth.commercial_admin, (req, res) => {
     adService.deleteAd(req,res);
 });
 
-router.get("/advertisements", auth.loggedIn, (req, res) => {
+router.get("/advertisements", auth.loggedIn, auth.commercial_admin, (req, res) => {
     adService.getAdvertisements(req,res);
 });
 
