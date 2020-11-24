@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const userRouter = require('./01_api/user-routing.js');
 const vehicleRouter = require('./01_api/vehicle-routing.js');
 const adRouter = require('./01_api/ad-routing.js');
+const adminAdRouter = require('./01_api/admin-ad-routing.js');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/user', userRouter);
 app.use('/vehicle', vehicleRouter);
 app.use('/advertisement', adRouter);
+app.use('/admin-advertisement', adminAdRouter);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8090;
