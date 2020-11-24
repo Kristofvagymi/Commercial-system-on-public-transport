@@ -71,3 +71,22 @@ exports.getUsers = async (req, res) => {
     res.status(400).json({ err: err });
   }
 }
+
+exports.uploadMoney = async (req, res) => {
+  try{
+    let user = req.user
+    let amount = req.body.amount
+    if(amount < 0)
+      throw new Error("Amount must be greater than zero.")
+
+    User.findOne({username: user.username}).then((user) => {
+      if(! user) { throw new Error("User not found."); }
+      user.money += amount;
+      user.save();
+      res.status(200).json({ msg: `Money added:${amount}` });
+    })
+  } catch (err) {
+    res.status(400).json({ err: err });
+  }
+}
+

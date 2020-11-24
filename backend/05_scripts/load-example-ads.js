@@ -21,7 +21,7 @@ function loadAdvertisement(){
   formData.append('ad', JSON.stringify({countries: ['Pest'], title: 'Domestoas', from: {hours: 12}, to: {hours: 12}}));
   */
 
-  const ad = new Advertisement({countries: ['Pest'], title: 'Domestos', from: {hours: 12}, to: {hours: 12}, path: "./99_uploads/TEST/", fileName: "dom.jpg"});
+  const ad = new Advertisement({countries: ['Pest'], title: 'Domestos', from: {hours: 12}, to: {hours: 12}, path: "./99_uploads/TEST/", fileName: "dom.jpg", appearanceLeft: 10});
 
   console.log('default ads:\n');
 

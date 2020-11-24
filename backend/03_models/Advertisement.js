@@ -12,7 +12,6 @@ const adSchema = mongoose.Schema({
   },
   fileName: {
     type: String,
-    unique: true,
     required: [true, "Please Include file name."]
   },
   from: {
@@ -28,9 +27,23 @@ const adSchema = mongoose.Schema({
   path: {
     type: String,
     required: [true, "Please Include path to picture."]
+  },
+  appearanceLeft: {
+    type: Number,
+    required: true
+  },
+  createdBy: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+  isSubscription: {
+    type: Boolean,
+    required: true
+  },
+  maxAppearances: {
+    type: Number
+  },
+  lastPayed: {
+    type: Date
   }
-        
-  });
+});
 
 adSchema.statics.deleteById= function(id, cb){
   return this.deleteOne({_id: id}, cb);

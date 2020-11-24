@@ -24,4 +24,8 @@ router.get("/users", auth.loggedIn, auth.commercial_admin , (req, res) => {
    userService.getUsers(req, res);
 });
 
+router.get("/uploadMoney", auth.loggedIn, (req, res) => {
+   userService.uploadMoney(req, res);
+});
+
 module.exports = router;

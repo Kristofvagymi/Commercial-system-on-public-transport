@@ -2,12 +2,13 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const config = require("./04_config/db.config");
 const mongoose = require("mongoose");
+const cron = require("node-cron")
 
 const userRouter = require('./01_api/user-routing.js');
 const vehicleRouter = require('./01_api/vehicle-routing.js');
 const adRouter = require('./01_api/ad-routing.js');
 const adminAdRouter = require('./01_api/admin-ad-routing.js');
-
+const auditSubscription = require('./05_scripts/audit-subscriptions')
 const app = express();
 
 mongoose
@@ -18,6 +19,10 @@ mongoose
   .catch(err => {
     console.log({ database_error: err });
   });
+
+cron.schedule("0 0 2 * * *", function() {
+  auditSubscription.auditSubscriptions();
+});
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
