@@ -43,4 +43,8 @@ router.post("/getCustomAdvertisement", auth.loggedIn, auth.service, (req, res) =
     adService.getCustomAdvertisement(req,res);
 });
 
+router.post("/getAdvertisementContent", auth.loggedIn, auth.service, (req, res) => {
+    adService.getAdvertisementContent(req,res);
+});
+
 module.exports = router;
