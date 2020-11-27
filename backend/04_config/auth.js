@@ -4,7 +4,6 @@ const config = require("./db.config");
 exports.loggedIn = (req, res, next) => {
   try {
     const token = req.headers.authorization.replace("Bearer ", "");
-    console.log(token);
     const decoded = jwt.verify(token, config.secret);
     req.user = decoded;
     next();

@@ -14,8 +14,8 @@ mongoose
 
 function loadvehicles(){
     const vehicle1 = new Vehicle({registrationNumber: 'ABC-123', countries: []});
-    const vehicle2 = new Vehicle({registrationNumber: 'SEX-420', countries: [{country: "Pest"}]});
-    const vehicle3 = new Vehicle({registrationNumber: 'LOL-000', countries: [{country: "Pest"}, {country: "Baranya"}]});
+    const vehicle2 = new Vehicle({registrationNumber: 'SEX-420', countries: ["Pest"]});
+    const vehicle3 = new Vehicle({registrationNumber: 'LOL-000', countries: ["Pest", "Baranya"]});
 
     console.log('default vehicles:\n');
 

@@ -9,11 +9,14 @@ exports.createUser = async (req, res) => {
       })
       
       const user = new User(req.body);
+      user.role = 'advertiser'
+      user.money = 0
+      user.blockable = true
 
       let data = await user.save();
       res.status(201).json({ data });
     } catch (err) {
-        res.status(400).json({ err: err });
+        res.status(400).json({ error: err });
     }
 }
 
@@ -37,6 +40,7 @@ exports.blockUserByName = async (req, res) => {
       }
       user.blocked = true;
       user.save();
+      res.status(200).json({ blocked: req.body.username });
     })
   } catch (err) {
     res.status(400).json({ err: err });
@@ -51,26 +55,12 @@ exports.enableUserByName = async (req, res) => {
       }
       user.blocked = false;
       user.save();
+      res.status(200).json({ enabled: req.body.username });
     })
   } catch (err) {
     res.status(400).json({ err: err });
   }
 }
-
-exports.enableUserByName = async (req, res) => {
-  try{
-    User.findOne({username: req.body.username}).then((user) => {
-      if(!user){
-        throw new Error({ error: "User exists with given username." });
-      }
-      user.blocked = false;
-      user.save();
-    })
-  } catch (err) {
-    res.status(400).json({ err: err });
-  }
-}
-
 
 exports.getUsers = async (req, res) => {
   try{
@@ -81,3 +71,22 @@ exports.getUsers = async (req, res) => {
     res.status(400).json({ err: err });
   }
 }
+
+exports.uploadMoney = async (req, res) => {
+  try{
+    let user = req.user
+    let amount = req.body.amount
+    if(amount < 0)
+      throw new Error("Amount must be greater than zero.")
+
+    User.findOne({username: user.username}).then((user) => {
+      if(! user) { throw new Error("User not found."); }
+      user.money += amount;
+      user.save();
+      res.status(200).json({ msg: `Money added:${amount}` });
+    })
+  } catch (err) {
+    res.status(400).json({ err: err });
+  }
+}
+

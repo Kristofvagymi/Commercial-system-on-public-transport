@@ -1,6 +1,6 @@
 const express = require("express");
 const auth = require("../04_config/auth");
-const adService = require("../02_services/ad-service");
+const adminAdService = require("../02_services/admin-ad-service");
 const multer = require('multer');
 const fs = require('fs');
 
@@ -8,6 +8,8 @@ var router = express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        req.user = {}
+        req.user.username = 'TEST'
         const path = `./99_uploads/${req.user.username}/`
         req.body.path = path
         req.body.fileName = file.originalname
@@ -27,20 +29,16 @@ const fileFilter = (req, file, cb) => {
 }
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-router.post("/", auth.loggedIn, upload.single('file'), (req, res) => {
-    adService.createAd(req,res);
+router.post("/", auth.loggedIn, auth.transport_admin, upload.single('file'), (req, res) => {
+    adminAdService.createAdminAd(req,res);
 });
 
-router.delete("/:id", auth.loggedIn, auth.commercial_admin, (req, res) => {
-    adService.deleteAd(req,res);
+router.delete("/deleteAdminAdvertisement/:id", auth.loggedIn, auth.transport_admin, (req, res) => {
+    adminAdService.deleteAdminAd(req,res);
 });
 
-router.get("/advertisements", auth.loggedIn, auth.commercial_admin, (req, res) => {
-    adService.getAdvertisements(req,res);
-});
-
-router.post("/getCustomAdvertisement", auth.loggedIn, auth.service, (req, res) => {
-    adService.getCustomAdvertisement(req,res);
+router.get("/", auth.loggedIn, auth.transport_admin, (req, res) => {
+    adminAdService.getAdminAds(req,res);
 });
 
 module.exports = router;
