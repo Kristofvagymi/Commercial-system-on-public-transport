@@ -46,6 +46,7 @@
 </template>
 <script>
 import swal from "sweetalert";
+import { Bus } from "@/bus.js";
 
 var tokenInHeader = {
   headers: {
@@ -86,6 +87,7 @@ export default {
           tokenInHeader
         );
         await this.fetchUsers();
+        Bus.$emit("refreshAdvertisements")
       } catch (err) {
         swal("Error", err.response.data.error, "error");
       }
@@ -101,6 +103,7 @@ export default {
           tokenInHeader
         );
         await this.fetchUsers();
+        Bus.$emit("refreshAdvertisements")
       } catch (err) {
         swal("Error", err.response.data.error, "error");
       }

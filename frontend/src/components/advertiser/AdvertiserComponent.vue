@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-      advertiser component
+  <div class="container mt-3">
+    <h3>My advertisements</h3>
   </div>
 </template>
 <script>
