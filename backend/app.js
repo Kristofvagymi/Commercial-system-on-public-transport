@@ -12,23 +12,23 @@ const auditSubscription = require('./05_scripts/audit-subscriptions')
 const app = express();
 
 mongoose
-  .connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Database is connected");
-  })
-  .catch(err => {
-    console.log({ database_error: err });
-  });
+    .connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log("Database is connected");
+    })
+    .catch(err => {
+        console.log({ database_error: err });
+    });
 
 cron.schedule("0 0 2 * * *", function() {
-  auditSubscription.auditSubscriptions();
+    auditSubscription.auditSubscriptions();
 });
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  next();
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    next();
 });
 
 // parse requests of content-type - application/json
@@ -45,5 +45,5 @@ app.use('/admin-advertisement', adminAdRouter);
 // set port, listen for requests
 const PORT = process.env.PORT || 8090;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+    console.log(`Server is running on port ${PORT}.`);
 });
