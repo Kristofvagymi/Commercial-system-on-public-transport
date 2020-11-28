@@ -47,7 +47,7 @@ exports.getCustomAdvertisement = async (req, res) => {
 exports.getAdvertisementContent = async (req, res) => {
     let id = req.body.id
     
-    Advertisement.findOne(_id: id).then((advertisement) => {
+    Advertisement.findOne({_id: id}).then((advertisement) => {
         advertisement.appearanceLeft--;
         advertisement.save();
         
