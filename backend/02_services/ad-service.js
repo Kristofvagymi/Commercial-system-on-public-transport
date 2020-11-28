@@ -121,7 +121,7 @@ exports.getAdvertisementsByUser = async(req, res) => {
         if (!user) throw new Error("User not found.");
 
         Advertisement.find({ createdBy: user._id }).then((ads) => {
-            res.send(ads);
+            res.send({ advertisements: ads });
         })
     } catch (err) {
         res.status(400).json({ error: err.message });

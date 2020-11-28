@@ -47,7 +47,7 @@ router.post("/getAdvertisementContent", auth.loggedIn, (req, res) => {
     adService.getAdvertisementContent(req, res);
 });
 
-router.post("/getAdvertisementsByUser", auth.loggedIn, (req, res) => {
+router.get("/getAdvertisementsByUser", auth.loggedIn, (req, res) => {
     adService.getAdvertisementsByUser(req, res);
 });
 

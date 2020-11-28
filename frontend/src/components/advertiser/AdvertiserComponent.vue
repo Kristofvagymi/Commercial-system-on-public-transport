@@ -1,13 +1,30 @@
 <template>
-  <div class="container mt-3">
-    <h3>My advertisements</h3>
+  <div class="mt-3">
+    <div class="container">
+      <MyAdvertisementsComponent />
+    </div>
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-sm">
+          <CreateAdvertisementsComponent />
+        </div>
+        <div class="col-sm">
+          <UploadMoneyComponent />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
+import CreateAdvertisementsComponent from "./CreateAdvertisementsComponent.vue";
+import MyAdvertisementsComponent from "./MyAdvertisementsComponent";
+import UploadMoneyComponent from "./UploadMoneyComponent";
+
 export default {
-  data() {
-    return {
-    };
-  }
+  components: {
+    CreateAdvertisementsComponent,
+    MyAdvertisementsComponent,
+    UploadMoneyComponent,
+  },
 };
 </script>
