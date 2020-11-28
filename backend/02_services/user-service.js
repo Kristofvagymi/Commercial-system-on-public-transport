@@ -25,6 +25,9 @@ exports.loginUser = async(req, res) => {
         const username = req.body.username;
         const password = req.body.password;
         const user = await User.findByCredentials(username, password);
+        if (user.blocked === true) {
+            throw new Error("You are blocked!")
+        }
         const token = await user.generateAuthToken();
         res.status(201).json({ user, token });
     } catch (err) {
@@ -34,9 +37,9 @@ exports.loginUser = async(req, res) => {
 
 exports.blockUserByName = async(req, res) => {
     try {
-        User.findOne({ username: req.body.username }).then((user) => {
+        User.findOne({ username: req.body.username, blockable: true }).then((user) => {
             if (!user) {
-                throw new Error({ error: "User exists with given username." });
+                throw new Error({ error: "No matching user found." });
             }
             user.blocked = true;
             user.save();
@@ -51,7 +54,7 @@ exports.enableUserByName = async(req, res) => {
     try {
         User.findOne({ username: req.body.username }).then((user) => {
             if (!user) {
-                throw new Error({ error: "User exists with given username." });
+                throw new Error({ error: "No matching user found." });
             }
             user.blocked = false;
             user.save();

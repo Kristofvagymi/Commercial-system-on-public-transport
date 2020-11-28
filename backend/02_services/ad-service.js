@@ -4,111 +4,126 @@ const Vehicle = require("../03_models/Vehicle");
 const fs = require('fs');
 const User = require("../03_models/User");
 
-exports.getAdvertisements = async (req, res) => {
-    try{
-        Advertisement.find().then((advertisements) => {
+exports.getAdvertisements = async(req, res) => {
+    try {
+        Advertisement.find().populate('createdBy').then((advertisements) => {
             res.json({ advertisements: advertisements });
         })
     } catch (err) {
-      res.status(400).json({ err: err });
+        res.status(400).json({ error: err.message });
     }
 }
 
-exports.getCustomAdvertisement = async (req, res) => {
-    try{
-      let hours = req.body.hours
-      let regNum = req.body.regNum
-      let AdminAdvertisements = []
-      await AdminAdvertisement.find({regNumbers: regNum,"from.hours": {$gte : hours} , "to.hours"  : {$lte : hours} }).then((advertisements) => {
-        AdminAdvertisements = advertisements;
-      })
+exports.getCustomAdvertisement = async(req, res) => {
+    try {
+        let hours = req.body.hours
+        let regNum = req.body.regNum
+        let AdminAdvertisements = []
+        await AdminAdvertisement.find({ regNumbers: regNum, "from.hours": { $gte: hours }, "to.hours": { $lte: hours } }).then((advertisements) => {
+            AdminAdvertisements = advertisements;
+        })
 
-      if(AdminAdvertisements.length > 0){
-        res.json({ advertisements: AdminAdvertisements });
-        return;
-      }
+        if (AdminAdvertisements.length > 0) {
+            res.json({ advertisements: AdminAdvertisements });
+            return;
+        }
 
-      let vehicle = await Vehicle.findOne({registrationNumber: regNum},{ strict: false }).lean();
+        let vehicle = await Vehicle.findOne({ registrationNumber: regNum }, { strict: false }).lean();
 
-      if(!vehicle){
-        console.log("no vehicle")
-        throw new Error({ error: "No vehicle found with given registratin number." });
-      }
-      Advertisement.find({countries: {$in: vehicle.countries},"from.hours": {$gte : hours} , "to.hours"  : {$lte : hours}, appearanceLeft:  {$gte : 0} }).then((advertisements) => {
-        res.json({ advertisements: advertisements });
-        return;
-      })
+        if (!vehicle) {
+            console.log("no vehicle")
+            throw new Error({ error: "No vehicle found with given registratin number." });
+        }
+        Advertisement.find({ countries: { $in: vehicle.countries }, "from.hours": { $gte: hours }, "to.hours": { $lte: hours }, appearanceLeft: { $gte: 0 }, createdBy: { blocked: false } }).then((advertisements) => {
+            res.json({ advertisements: advertisements });
+            return;
+        })
 
     } catch (err) {
-      res.status(400).json(err);
+        res.status(400).json(err);
     }
 }
 
-exports.getAdvertisementContent = async (req, res) => {
+exports.getAdvertisementContent = async(req, res) => {
     let id = req.body.id
-    
-    Advertisement.findOne({_id: id}).then((advertisement) => {
+
+    Advertisement.findOne({ _id: id }).then((advertisement) => {
         advertisement.appearanceLeft--;
         advertisement.save();
-        
-        res.writeHead(200,{'content-type':'image/jpg'});
+
+        res.writeHead(200, { 'content-type': 'image/jpg' });
         fs.createReadStream(advertisement.path + advertisement.fileName).pipe(res);
     })
 }
 
-exports.createAd = async (req, res) => {
-    try{
-      let ad = JSON.parse(req.body.ad)
-      let user = req.user
-      let userObject = await User.findOne({username: user.username});
+exports.createAd = async(req, res) => {
+    try {
+        let ad = JSON.parse(req.body.ad)
+        let user = req.user
+        let userObject = await User.findOne({ username: user.username });
 
-      if(userObject.money <ad.appearances * 1000) {
-        throw new Error("Not enough money.");
-        return;
-      }
-      userObject.money -= ad.appearances * 1000
-      userObject.save()
+        if (userObject.money < ad.appearances * 1000) {
+            throw new Error("Not enough money.");
+            return;
+        }
+        userObject.money -= ad.appearances * 1000
+        userObject.save()
 
-      ad.path = req.body.path
-      ad.fileName = req.body.fileName
-      ad.appearanceLeft = ad.appearances
-      ad.createdBy = userObject._id;
-      
+        ad.path = req.body.path
+        ad.fileName = req.body.fileName
+        ad.appearanceLeft = ad.appearances
+        ad.createdBy = userObject._id;
 
-      if(ad.isSubscription) {
-        ad.maxAppearances = ad.appearances
-        ad.lastPayed = Date.now()
-      }
 
-      const savedAd = new Advertisement(ad);
-      savedAd.save();
+        if (ad.isSubscription) {
+            ad.maxAppearances = ad.appearances
+            ad.lastPayed = Date.now()
+        }
 
-      res.status(200).json({ savedAd });
+        const savedAd = new Advertisement(ad);
+        savedAd.save();
+
+        res.status(200).json({ savedAd });
     } catch (err) {
-      console.log(err)
-      res.status(400).json({ err: err });
+        console.log(err)
+        res.status(400).json({ err: err });
     }
 }
 
-exports.deleteAd = async (req, res) => {
-    try{
-        Advertisement.findOne({_id:  req.params['id']})
-          .then((ad) => {
-            if( !ad ) {res.status(200).send({ message : 'Advertisement was deleted earlier.'});return;}
-            
-            fs.unlink(ad.path + ad.fileName, (err) => {
-              if (err) {
-                console.error(err)
-                return
-              }
+exports.deleteAd = async(req, res) => {
+    try {
+        Advertisement.findOne({ _id: req.params['id'] })
+            .then((ad) => {
+                if (!ad) { res.status(200).send({ message: 'Advertisement was deleted earlier.' }); return; }
+
+                fs.unlink(ad.path + ad.fileName, (err) => {
+                    if (err) {
+                        console.error(err)
+                        return
+                    }
+                })
+
+                Advertisement.deleteById(req.params['id']).then(() => {
+                    res.status(200).send({ message: 'Advertisement successfully deleted' });
+                });
+
             })
-
-            Advertisement.deleteById(req.params['id']).then(()=>{
-              res.status(200).send({ message : 'Advertisement successfully deleted'});
-            });
-
-          })
     } catch (err) {
-      res.status(400).json({ err: err });
+        res.status(400).json({ err: err });
+    }
+}
+
+
+exports.getAdvertisementsByUser = async(req, res) => {
+    try {
+        let username = req.user.username
+        let user = await User.findOne({ username: username });
+        if (!user) throw new Error("User not found.");
+
+        Advertisement.find({ createdBy: user._id }).then((ads) => {
+            res.send(ads);
+        })
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 }

@@ -28,23 +28,27 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 router.post("/", auth.loggedIn, upload.single('file'), (req, res) => {
-    adService.createAd(req,res);
+    adService.createAd(req, res);
 });
 
 router.delete("/:id", auth.loggedIn, auth.commercial_admin, (req, res) => {
-    adService.deleteAd(req,res);
+    adService.deleteAd(req, res);
 });
 
 router.get("/advertisements", auth.loggedIn, auth.commercial_admin, (req, res) => {
-    adService.getAdvertisements(req,res);
+    adService.getAdvertisements(req, res);
 });
 
 router.post("/getCustomAdvertisement", auth.loggedIn, auth.service, (req, res) => {
-    adService.getCustomAdvertisement(req,res);
+    adService.getCustomAdvertisement(req, res);
 });
 
-router.post("/getAdvertisementContent", auth.loggedIn, auth.service, (req, res) => {
-    adService.getAdvertisementContent(req,res);
+router.post("/getAdvertisementContent", auth.loggedIn, (req, res) => {
+    adService.getAdvertisementContent(req, res);
+});
+
+router.post("/getAdvertisementsByUser", auth.loggedIn, (req, res) => {
+    adService.getAdvertisementsByUser(req, res);
 });
 
 module.exports = router;
