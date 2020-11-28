@@ -19,6 +19,7 @@ exports.auditSubscriptions = async () => {
         advertisement.createdBy.money -= advertisement.appearances * 1000;
         advertisement.createdBy.save();
         advertisement.appearanceLeft = advertisement.maxAppearances;
+        advertisement.lastPayed = Date.now();
         advertisement.save()
       }
 

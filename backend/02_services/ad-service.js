@@ -8,7 +8,7 @@ exports.getAdvertisements = async (req, res) => {
     try{
         Advertisement.find().then((advertisements) => {
             res.json({ advertisements: advertisements });
-      })
+        })
     } catch (err) {
       res.status(400).json({ err: err });
     }
@@ -35,11 +35,6 @@ exports.getCustomAdvertisement = async (req, res) => {
         throw new Error({ error: "No vehicle found with given registratin number." });
       }
       Advertisement.find({countries: {$in: vehicle.countries},"from.hours": {$gte : hours} , "to.hours"  : {$lte : hours}, appearanceLeft:  {$gte : 0} }).then((advertisements) => {
-        for(index in advertisements){
-          let ad = advertisements[index]
-          ad.appearanceLeft--;
-          ad.save();
-        }
         res.json({ advertisements: advertisements });
         return;
       })
@@ -47,6 +42,18 @@ exports.getCustomAdvertisement = async (req, res) => {
     } catch (err) {
       res.status(400).json(err);
     }
+}
+
+exports.getAdvertisementContent = async (req, res) => {
+    let id = req.body.id
+    
+    Advertisement.findOne(_id: id).then((advertisement) => {
+        advertisement.appearanceLeft--;
+        advertisement.save();
+        
+        res.writeHead(200,{'content-type':'image/jpg'});
+        fs.createReadStream(advertisement.path + advertisement.fileName).pipe(res);
+    })
 }
 
 exports.createAd = async (req, res) => {
