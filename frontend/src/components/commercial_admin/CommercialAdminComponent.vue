@@ -72,7 +72,7 @@ export default {
         let response = await this.$http.get("/user/users", tokenInHeader);
         this.users = response.data.users;
       } catch (err) {
-        console.log(err.response.data.error);
+        swal("Error", err.response.data.error, "error");
       }
     },
 
@@ -87,7 +87,7 @@ export default {
         );
         await this.fetchUsers();
       } catch (err) {
-        console.log(err);
+        swal("Error", err.response.data.error, "error");
       }
     },
 
@@ -102,7 +102,7 @@ export default {
         );
         await this.fetchUsers();
       } catch (err) {
-        console.log(err);
+        swal("Error", err.response.data.error, "error");
       }
     },
     
@@ -119,8 +119,7 @@ export default {
         console.log(response)
         await this.fetchUsers();
       } catch (err) {
-        console.log(err.response.data.err.message)
-        swal("Error", err.response.data.err.message, "error");
+        swal("Error", err.response.data.error, "error");
       }
     },
   },
