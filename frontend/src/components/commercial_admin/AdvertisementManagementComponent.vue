@@ -5,6 +5,9 @@
       <template #cell(time_range)="data">
         {{ data.item.to.hours + " - " + data.item.from.hours + " hours" }}
       </template>
+      <template #cell(countries)="data">
+        {{ data.item.countries.join(', ') }}
+      </template>
       <template #cell(actions)="data">
         <b-button
           class="mr-2"
