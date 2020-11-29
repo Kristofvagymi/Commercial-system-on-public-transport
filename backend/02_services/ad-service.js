@@ -4,6 +4,8 @@ const Vehicle = require("../03_models/Vehicle");
 const fs = require('fs');
 const User = require("../03_models/User");
 const sharp = require('sharp');
+const formidable = require('formidable');
+const { on } = require("process");
 
 exports.getAdvertisements = async(req, res) => {
     try {
@@ -70,35 +72,45 @@ exports.getAdvertisementPreview = async(req, res) => {
 
 exports.createAd = async(req, res) => {
     try {
-        let ad = JSON.parse(req.body.ad)
-        let user = req.user
-        let userObject = await User.findOne({ username: user.username });
+        const dir_path = global.appRoot + '/99_uploads/' + req.user.username;
+        const form = formidable({ multiples: true });
 
-        if (userObject.money < ad.appearances * 1000) {
-            throw new Error("Not enough money.");
-            return;
-        }
-        userObject.money -= ad.appearances * 1000
-        userObject.save()
+        form.parse(req)
 
-        ad.path = req.body.path
-        ad.fileName = req.body.fileName
-        ad.appearanceLeft = ad.appearances
-        ad.createdBy = userObject._id;
+        form.on('fileBegin', function(name, file) {
+            if (!fs.existsSync(dir_path)) {
+                fs.mkdirSync(dir_path);
+            }
+            file.path = dir_path + "/" + file.name;
+        });
+
+        form.on('field', async(name, value) => {
+            let ad = JSON.parse(value)
+            let user = req.user
+            let userObject = await User.findOne({ username: user.username });
+
+            if (userObject.money < ad.appearances * 1000) {
+                throw new Error("Not enough money.");
+            }
+            userObject.money -= ad.appearances * 1000
+            userObject.save()
+
+            ad.path = '/99_uploads/' + req.user.username + "/"
+            ad.appearanceLeft = ad.appearances
+            ad.createdBy = userObject._id;
 
 
-        if (ad.isSubscription) {
-            ad.maxAppearances = ad.appearances
-            ad.lastPayed = Date.now()
-        }
+            if (ad.isSubscription) {
+                ad.maxAppearances = ad.appearances
+                ad.lastPayed = Date.now()
+            }
 
-        const savedAd = new Advertisement(ad);
-        savedAd.save();
-
-        res.status(200).json({ savedAd });
+            const savedAd = new Advertisement(ad);
+            let data = await savedAd.save();
+            res.status(200).json(data);
+        });
     } catch (err) {
-        console.log(err)
-        res.status(400).json({ err: err });
+        res.status(400).json({ error: err.message });
     }
 }
 
