@@ -36,12 +36,8 @@ export default {
       money: 1000,
     };
   },
-  created: () => {
-   console.log(localStorage.getItem("jwt"))
-  },
   methods: {        
     async uploadMoney() {
-      console.log("UPLOAD")
       try {
         await this.$http.post(
           "/user/uploadMoney",

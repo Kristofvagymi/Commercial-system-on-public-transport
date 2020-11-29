@@ -1,18 +1,15 @@
 <template>
-  <div class="mt-5">
-    <h3>Advertisement management</h3>
-    <b-table :items="advertisments" :fields="fields" :tbody-tr-class="rowClass">
+  <div class="mt-2">
+    <h3>My advertisements</h3>
+    <b-table hover :items="advertisments" :fields="fields">
       <template #cell(advertisement)="data">
         <b-img-lazy :src="getImageUrl(data.item._id)"></b-img-lazy>
       </template>
       <template #cell(time_range)="data">
         {{ data.item.from.hours + ":00 - " + data.item.to.hours + ":00" }}
       </template>
-      <template #cell(countries)="data">
-        {{ data.item.countries.join(', ') }}
-      </template>
-      <template #cell(appearanceLeft)="data">
-        {{ data.item.appearanceLeft}} {{ data.item.isSubscription ? "/month" : ""}}
+      <template #cell(regNumbers)="data">
+        {{ data.item.regNumbers.join(", ") }}
       </template>
       <template #cell(actions)="data">
         <b-button
@@ -23,14 +20,6 @@
         >
           Delete
         </b-button>
-      </template>
-      <template #cell(user)="data">
-        {{
-          data.item.createdBy.username +
-          " " +
-          (data.item.createdBy.blocked ? " [BLOCKED] " : "") +
-          ""
-        }}
       </template>
     </b-table>
   </div>
@@ -50,11 +39,11 @@ export default {
     return {
       fields: [
         { key: "advertisement" },
-        { key: "title" },
-        { key: "user" },
-        { key: "appearanceLeft" },
         { key: "time_range" },
-        { key: "countries" },
+        {
+          key: "regNumbers",
+          label: "Vehicles",
+        },
         { key: "actions" },
       ],
       advertisments: [],
@@ -68,7 +57,7 @@ export default {
     async fetchAdvertisements() {
       try {
         let response = await this.$http.get(
-          "/advertisement/advertisements",
+          "/admin-advertisement",
           tokenInHeader
         );
         this.advertisments = response.data.advertisements;
@@ -86,30 +75,24 @@ export default {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            await this.$http.delete(
-              "/advertisement/" + _id,
-              tokenInHeader
-            );
-            await this.fetchAdvertisements()
-          } catch (err) {
-            throw new Error(err.response.data.error)
-          }
-          Swal.fire("Deleted!", "", "success");
-        }
-      }).catch(err => {
-        Swal.fire("Error", err.message, "error");
       })
-    },
-
-    rowClass(item, type) {
-      if (item && type === "row" && item.createdBy.blocked === true) {
-        return "blocked";
-      } else {
-        return "null";
-      }
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await this.$http.delete(
+                "/admin-advertisement/deleteAdminAdvertisement/" + _id,
+                tokenInHeader
+              );
+              await this.fetchAdvertisements();
+            } catch (err) {
+              throw new Error(err.response.data.error);
+            }
+            Swal.fire("Deleted!", "", "success");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Error", err.message, "error");
+        });
     },
 
     listenToEvents() {
@@ -120,7 +103,7 @@ export default {
     },
 
     getImageUrl(id) {
-      return `http://localhost:8090/advertisement/${id}/preview`;
+      return `http://localhost:8090/admin-advertisement/${id}/preview`;
     },
   },
 };
