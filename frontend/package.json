@@ -12,6 +12,7 @@
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.19.0",
     "core-js": "^3.6.5",
+    "form-data": "^3.0.0",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^10.10.4",
     "vue": "^2.6.12",

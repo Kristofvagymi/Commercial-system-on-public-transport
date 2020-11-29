@@ -66,7 +66,7 @@ export default {
         );
         this.advertisments = response.data.advertisements;
       } catch (err) {
-        Swal("Error", err.response.data.error, "error");
+        Swal.fire("Error", err.response.data.error, "error");
       }
     },
 
@@ -93,7 +93,7 @@ export default {
           Swal.fire("Deleted!", "", "success");
         }
       }).catch(err => {
-        Swal("Error", err.message, "error");
+        Swal.fire("Error", err.message, "error");
       })
     },
 
