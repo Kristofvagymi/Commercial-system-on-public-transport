@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         req.user = {}
         req.user.username = 'TEST'
-        const path = `./99_uploads/${req.user.username}/`
+        const path = `/99_uploads/${req.user.username}/`
         req.body.path = path
         req.body.fileName = file.originalname
         fs.mkdirSync(path, { recursive: true })
@@ -30,15 +30,15 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 router.post("/", auth.loggedIn, auth.transport_admin, upload.single('file'), (req, res) => {
-    adminAdService.createAdminAd(req,res);
+    adminAdService.createAdminAd(req, res);
 });
 
 router.delete("/deleteAdminAdvertisement/:id", auth.loggedIn, auth.transport_admin, (req, res) => {
-    adminAdService.deleteAdminAd(req,res);
+    adminAdService.deleteAdminAd(req, res);
 });
 
 router.get("/", auth.loggedIn, auth.transport_admin, (req, res) => {
-    adminAdService.getAdminAds(req,res);
+    adminAdService.getAdminAds(req, res);
 });
 
 module.exports = router;

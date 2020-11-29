@@ -8,7 +8,7 @@ var router = express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const path = `./99_uploads/${req.user.username}/`
+        const path = `/99_uploads/${req.user.username}/`
         req.body.path = path
         req.body.fileName = file.originalname
         fs.mkdirSync(path, { recursive: true })
@@ -45,6 +45,10 @@ router.post("/getCustomAdvertisement", auth.loggedIn, auth.service, (req, res) =
 
 router.post("/getAdvertisementContent", auth.loggedIn, (req, res) => {
     adService.getAdvertisementContent(req, res);
+});
+
+router.get("/:id/preview", (req, res) => {
+    adService.getAdvertisementPreview(req, res);
 });
 
 router.get("/getAdvertisementsByUser", auth.loggedIn, (req, res) => {

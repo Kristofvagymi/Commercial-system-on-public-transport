@@ -3,6 +3,7 @@ const AdminAdvertisement = require("../03_models/AdminAdvertisement");
 const Vehicle = require("../03_models/Vehicle");
 const fs = require('fs');
 const User = require("../03_models/User");
+const sharp = require('sharp');
 
 exports.getAdvertisements = async(req, res) => {
     try {
@@ -53,6 +54,17 @@ exports.getAdvertisementContent = async(req, res) => {
 
         res.writeHead(200, { 'content-type': 'image/jpg' });
         fs.createReadStream(advertisement.path + advertisement.fileName).pipe(res);
+    })
+}
+
+exports.getAdvertisementPreview = async(req, res) => {
+    let id = req.params.id
+
+    Advertisement.findOne({ _id: id }).then((advertisement) => {
+        let transform = sharp();
+        transform = transform.resize(100, 100)
+        res.writeHead(200, { 'content-type': 'image/jpg' });
+        fs.createReadStream(global.appRoot + advertisement.path + advertisement.fileName).pipe(transform).pipe(res);
     })
 }
 

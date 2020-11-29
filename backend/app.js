@@ -11,6 +11,9 @@ const adminAdRouter = require('./01_api/admin-ad-routing.js');
 const auditSubscription = require('./05_scripts/audit-subscriptions')
 const app = express();
 
+var path = require('path');
+global.appRoot = path.resolve(__dirname);
+
 mongoose
     .connect(config.url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
