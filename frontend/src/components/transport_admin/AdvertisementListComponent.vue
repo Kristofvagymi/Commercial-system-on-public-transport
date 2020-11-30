@@ -28,12 +28,6 @@
 import Swal from "sweetalert2";
 import { Bus } from "@/bus.js";
 
-var tokenInHeader = {
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("jwt"),
-  },
-};
-
 export default {
   data() {
     return {
@@ -47,9 +41,15 @@ export default {
         { key: "actions" },
       ],
       advertisments: [],
+      tokenInHeader: {},
     };
   },
   created: function () {
+    this.tokenInHeader = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    };
     this.fetchAdvertisements();
     this.listenToEvents();
   },
@@ -58,7 +58,7 @@ export default {
       try {
         let response = await this.$http.get(
           "/admin-advertisement",
-          tokenInHeader
+          this.tokenInHeader
         );
         this.advertisments = response.data.advertisements;
       } catch (err) {
@@ -81,7 +81,7 @@ export default {
             try {
               await this.$http.delete(
                 "/admin-advertisement/deleteAdminAdvertisement/" + _id,
-                tokenInHeader
+                this.tokenInHeader
               );
               await this.fetchAdvertisements();
             } catch (err) {

@@ -14,7 +14,9 @@
           min="1000"
         />
         <div class="float-right">
-          <b-button variant="primary" class="float-right" @click="uploadMoney">Upload</b-button>
+          <b-button variant="primary" class="float-right" @click="uploadMoney"
+            >Upload</b-button
+          >
         </div>
       </b-form>
     </b-card>
@@ -23,20 +25,22 @@
 <script>
 import Swal from "sweetalert2";
 
-var tokenInHeader = {
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("jwt"),
-  },
-};
-
 export default {
   data() {
     return {
       jwt: "",
       money: 1000,
+      tokenInHeader: {},
     };
   },
-  methods: {        
+  created: function () {
+    this.tokenInHeader = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    };
+  },
+  methods: {
     async uploadMoney() {
       try {
         await this.$http.post(
@@ -44,14 +48,14 @@ export default {
           {
             amount: Number(this.money),
           },
-          tokenInHeader
-        );        
-        this.$parent.$parent.user.money += Number(this.money)
-        this.money = 1000
+          this.tokenInHeader
+        );
+        this.$parent.$parent.user.money += Number(this.money);
+        this.money = 1000;
       } catch (err) {
         Swal.fire("Error", err.response.data.error, "error");
       }
     },
-  }
+  },
 };
 </script>

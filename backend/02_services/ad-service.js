@@ -140,11 +140,8 @@ exports.deleteAd = async(req, res) => {
 
 exports.getAdvertisementsByUser = async(req, res) => {
     try {
-        let username = req.user.username
-        let user = await User.findOne({ username: username });
-        if (!user) throw new Error("User not found.");
 
-        Advertisement.find({ createdBy: user._id }).then((ads) => {
+        Advertisement.find({ createdBy: req.user._id }).then((ads) => {
             res.send({ advertisements: ads });
         })
     } catch (err) {

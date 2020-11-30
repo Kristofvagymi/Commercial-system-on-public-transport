@@ -64,7 +64,7 @@
               >
             </div>
           </div>
-          <div class="row mt-2" v-if="form.countries.length != 0">
+          <div class="row mt-2" v-if="form.countries != null && form.countries.length != 0">
             <div class="col">
               <i>Selected countries:</i> {{ form.countries.join(", ") }}
             </div>
@@ -146,12 +146,6 @@
 import Swal from "sweetalert2";
 import { Bus } from "@/bus.js";
 
-var tokenInHeader = {
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("jwt"),
-  },
-};
-
 export default {
   data() {
     return {
@@ -198,10 +192,18 @@ export default {
         "Baranya",
         "Somogy",
         "Vas",
-        "Zala"
+        "Zala",
       ],
       pickedCountry: null,
       show: true,
+      tokenInHeader: {},
+    };
+  },
+  created: function () {
+    this.tokenInHeader = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
     };
   },
   methods: {
@@ -232,17 +234,13 @@ export default {
               to: {
                 hours: this.form.to,
               },
-              fileName: this.form.image.name
+              fileName: this.form.image.name,
             })
           );
-          await this.$http.post(
-            "/advertisement",
-            formData,
-            tokenInHeader
-          );
-          Bus.$emit("refreshMyAdvertisements")
-          this.$parent.$parent.user.money -= this.form.appearances * 1000
-          this.onReset()
+          await this.$http.post("/advertisement", formData, this.tokenInHeader);
+          Bus.$emit("refreshMyAdvertisements");
+          this.$parent.$parent.user.money -= this.form.appearances * 1000;
+          this.onReset();
         } catch (err) {
           Swal.fire("Error", err.response.data.error, "error");
         }

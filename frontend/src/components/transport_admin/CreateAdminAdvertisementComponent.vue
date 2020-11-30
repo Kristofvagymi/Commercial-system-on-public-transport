@@ -88,12 +88,6 @@
 import Swal from "sweetalert2";
 import { Bus } from "@/bus.js";
 
-var tokenInHeader = {
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("jwt"),
-  },
-};
-
 export default {
   data() {
     return {
@@ -134,9 +128,15 @@ export default {
       vehicles: [{ text: "Pick a vehicle", value: null }],
       pickedRegNumber: null,
       show: true,
+      tokenInHeader: {},
     };
   },
   created: function () {
+    this.tokenInHeader = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    };
     this.fetchVehicles();
   },
   methods: {
@@ -171,7 +171,7 @@ export default {
           await this.$http.post(
             "/admin-advertisement",
             formData,
-            tokenInHeader
+            this.tokenInHeader
           );
           Bus.$emit("refreshAdvertisements");
           this.onReset();
@@ -182,7 +182,7 @@ export default {
     },
     async fetchVehicles() {
       try {
-        let response = await this.$http.get("/vehicle/vehicles", tokenInHeader);
+        let response = await this.$http.get("/vehicle/vehicles", this.tokenInHeader);
         for (const vehicle of response.data.vehicles) {
           this.vehicles.push({
             text:

@@ -12,7 +12,8 @@
         {{ data.item.countries.join(", ") }}
       </template>
       <template #cell(appearanceLeft)="data">
-        {{ data.item.appearanceLeft}} {{ data.item.isSubscription ? "/month" : ""}}
+        {{ data.item.appearanceLeft }}
+        {{ data.item.isSubscription ? "/month" : "" }}
       </template>
     </b-table>
   </div>
@@ -20,12 +21,6 @@
 <script>
 import Swal from "sweetalert2";
 import { Bus } from "@/bus.js";
-
-var tokenInHeader = {
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("jwt"),
-  },
-};
 
 export default {
   data() {
@@ -38,9 +33,15 @@ export default {
         { key: "countries" },
       ],
       advertisements: [],
+      tokenInHeader: {},
     };
   },
   created: function () {
+    this.tokenInHeader = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    };
     this.fetchAdvertisements();
     this.listenToEvents();
   },
@@ -49,7 +50,7 @@ export default {
       try {
         let response = await this.$http.get(
           "/advertisement/getAdvertisementsByUser",
-          tokenInHeader
+          this.tokenInHeader
         );
         this.advertisements = response.data.advertisements;
       } catch (err) {
