@@ -24,12 +24,16 @@ router.post("/getAdvertisementContent", auth.loggedIn, (req, res) => {
     adService.getAdvertisementContent(req, res);
 });
 
-router.get("/:id/preview", (req, res) => {
+router.get("/:id/preview", auth.loggedIn, (req, res) => {
     adService.getAdvertisementPreview(req, res);
 });
 
 router.get("/getAdvertisementsByUser", auth.loggedIn, (req, res) => {
     adService.getAdvertisementsByUser(req, res);
+});
+
+router.get("/payments", auth.loggedIn, auth.commercial_admin, (req, res) => {
+    adService.getPayments(req, res);
 });
 
 module.exports = router;

@@ -157,3 +157,13 @@ exports.getAdvertisementsByUser = async(req, res) => {
         res.status(400).json({ error: err.message });
     }
 }
+
+exports.getPayments = async(req, res) => {
+    try {
+        Payment.find().populate('User').then((payments) => {
+            res.send(payments);
+        })
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+}
