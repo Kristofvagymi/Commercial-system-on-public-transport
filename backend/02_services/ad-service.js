@@ -95,7 +95,7 @@ exports.createAd = async(req, res) => {
             }
             let now = Date.now()
 
-            let payment = Payment({createdBy: req.user._id, amount: ad.appearances * 1000, timeStamp: now})
+            let payment = Payment({createdBy: req.user._id, amount: ad.appearances * 1000, timeStamp: now, username: req.user.username})
             payment.save();
 
             userObject.money -= ad.appearances * 1000

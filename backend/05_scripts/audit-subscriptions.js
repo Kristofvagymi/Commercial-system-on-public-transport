@@ -27,7 +27,8 @@ exports.auditSubscriptions = async() => {
                 let payment = Payment({
                     createdBy: advertisement.createdBy, 
                     amount: advertisement.appearances * 1000, 
-                    timeStamp: now
+                    timeStamp: now,
+                    username: advertisement.createdBy.username
                 })
                 payment.save();
             }
