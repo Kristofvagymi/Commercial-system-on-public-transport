@@ -25,7 +25,7 @@
       class="d-flex justify-content-between align-items-center m-1"
     >
       <b-form inline>
-        <b>Add user:</b> 
+        <b>Add user:</b>
         <b-form-input
           class="m-1 mr-3 ml-3"
           placeholder="Username"
@@ -48,29 +48,29 @@
 import swal from "sweetalert";
 import { Bus } from "@/bus.js";
 
-var tokenInHeader = {
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("jwt"),
-  },
-};
-
 export default {
   data() {
     return {
       users: [],
       newUser: {
         username: "",
-        password: ""
-      }
+        password: "",
+      },
+      tokenInHeader: {}
     };
   },
   created: function () {
+    this.tokenInHeader = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    };
     this.fetchUsers();
   },
   methods: {
     async fetchUsers() {
       try {
-        let response = await this.$http.get("/user/users", tokenInHeader);
+        let response = await this.$http.get("/user/users", this.tokenInHeader);
         this.users = response.data.users;
       } catch (err) {
         swal("Error", err.response.data.error, "error");
@@ -84,10 +84,10 @@ export default {
           {
             username: username,
           },
-          tokenInHeader
+          this.tokenInHeader
         );
         await this.fetchUsers();
-        Bus.$emit("refreshAdvertisements")
+        Bus.$emit("refreshAdvertisements");
       } catch (err) {
         swal("Error", err.response.data.error, "error");
       }
@@ -100,26 +100,26 @@ export default {
           {
             username: username,
           },
-          tokenInHeader
+          this.tokenInHeader
         );
         await this.fetchUsers();
-        Bus.$emit("refreshAdvertisements")
+        Bus.$emit("refreshAdvertisements");
       } catch (err) {
         swal("Error", err.response.data.error, "error");
       }
     },
-    
+
     async createUser() {
       try {
         let response = await this.$http.post(
           "/user/createUser",
           {
             username: this.newUser.username,
-            password: this.newUser.password
+            password: this.newUser.password,
           },
-          tokenInHeader
+          this.tokenInHeader
         );
-        console.log(response)
+        console.log(response);
         await this.fetchUsers();
       } catch (err) {
         swal("Error", err.response.data.error, "error");
