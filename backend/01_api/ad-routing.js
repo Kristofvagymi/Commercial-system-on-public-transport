@@ -24,7 +24,7 @@ router.post("/getAdvertisementContent", auth.loggedIn, (req, res) => {
     adService.getAdvertisementContent(req, res);
 });
 
-router.get("/:id/preview", auth.loggedIn, (req, res) => {
+router.get("/:id/preview", (req, res) => {
     adService.getAdvertisementPreview(req, res);
 });
 
