@@ -95,7 +95,7 @@ exports.createAd = async(req, res) => {
             }
             let now = Date.now()
 
-            let payment = Payment({createdBy: req.user._id, amount: ad.appearances * 1000, timeStamp: now, username: req.user.username})
+            let payment = Payment({ createdBy: req.user._id, amount: ad.appearances * 1000, timeStamp: now, username: req.user.username, title: ad.title })
             payment.save();
 
             userObject.money -= ad.appearances * 1000
@@ -157,7 +157,9 @@ exports.getAdvertisementsByUser = async(req, res) => {
 
 exports.getPayments = async(req, res) => {
     try {
-        Payment.find().populate('User').then((payments) => {
+        let oneMonthAgo = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
+
+        Payment.find({ timeStamp: { $gte: oneMonthAgo } }).populate('User').then((payments) => {
             res.send(payments);
         })
     } catch (err) {

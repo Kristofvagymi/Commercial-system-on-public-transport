@@ -1,8 +1,7 @@
 <template>
   <div>
     <h3>Payment report</h3>
-    <b-table hover :items="payments" :fields="fields">
-    </b-table>
+    <b-table hover :items="payments" :fields="fields"> </b-table>
   </div>
 </template>
 <script>
@@ -11,7 +10,7 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
-      fields: [],
+      fields: ["timeStamp", "title", "username", "amount"],
       payments: [],
       tokenInHeader: {},
     };
@@ -31,7 +30,7 @@ export default {
           "/advertisement/payments",
           this.tokenInHeader
         );
-        console.log(response.data)
+        console.log(response.data);
         this.payments = response.data;
       } catch (err) {
         Swal.fire("Error", err.response.data.error, "error");
