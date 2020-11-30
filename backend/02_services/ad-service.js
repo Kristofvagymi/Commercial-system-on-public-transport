@@ -23,7 +23,7 @@ exports.getCustomAdvertisement = async(req, res) => {
         let hours = req.body.hours
         let regNum = req.body.regNum
         let AdminAdvertisements = []
-        await AdminAdvertisement.find({ regNumbers: regNum, "from.hours": { $gte: hours }, "to.hours": { $lte: hours } }).then((advertisements) => {
+        await AdminAdvertisement.find({ regNumbers: regNum, "from.hours": { $lte: hours }, "to.hours": { $gte: hours } }).then((advertisements) => {
             AdminAdvertisements = advertisements;
         })
 
@@ -35,13 +35,35 @@ exports.getCustomAdvertisement = async(req, res) => {
         let vehicle = await Vehicle.findOne({ registrationNumber: regNum }, { strict: false }).lean();
 
         if (!vehicle) {
-            console.log("no vehicle")
             throw new Error({ error: "No vehicle found with given registratin number." });
         }
-        Advertisement.find({ countries: { $in: vehicle.countries }, "from.hours": { $gte: hours }, "to.hours": { $lte: hours }, appearanceLeft: { $gte: 0 }, createdBy: { blocked: false } }).then((advertisements) => {
-            res.json({ advertisements: advertisements });
-            return;
-        })
+        console.log(hours)
+        Advertisement.find({
+                countries: { $in: vehicle.countries },
+                "from.hours": { $lte: hours },
+                "to.hours": { $gte: hours },
+                appearanceLeft: { $gte: 0 }
+            })
+            .populate('createdBy')
+            .then((ads) => {
+                advertisements = ads
+                    .filter((el) => {
+                        return !el.createdBy.blocked
+                    })
+                    .map((el) => {
+                        console.log(el)
+                        return {
+                            id: el._id,
+                            title: el.title,
+                            user: el.createdBy.username
+                        };
+                    });
+
+
+
+                res.json({ advertisements: advertisements });
+                return;
+            })
 
     } catch (err) {
         res.status(400).json(err);
@@ -55,8 +77,8 @@ exports.getAdvertisementContent = async(req, res) => {
         advertisement.appearanceLeft--;
         advertisement.save();
 
-        res.writeHead(200, { 'content-type': 'image/jpg' });
-        fs.createReadStream(advertisement.path + advertisement.fileName).pipe(res);
+        res.writeHead(200, { 'content-type': 'image/*' });
+        fs.createReadStream(global.appRoot + advertisement.path + advertisement.fileName).pipe(res);
     })
 }
 

@@ -29,7 +29,7 @@ exports.loginUser = async(req, res) => {
             throw new Error("You are blocked!")
         }
         const token = await user.generateAuthToken();
-        res.status(201).json({ user, token });
+        res.status(201).json({ token });
     } catch (err) {
         res.status(401).json({ error: err.message });
     }
