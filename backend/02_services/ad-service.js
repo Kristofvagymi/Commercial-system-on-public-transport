@@ -3,6 +3,7 @@ const AdminAdvertisement = require("../03_models/AdminAdvertisement");
 const Vehicle = require("../03_models/Vehicle");
 const fs = require('fs');
 const User = require("../03_models/User");
+const Payment = require("../03_models/Payment");
 const sharp = require('sharp');
 const formidable = require('formidable');
 const { on } = require("process");
@@ -92,6 +93,11 @@ exports.createAd = async(req, res) => {
             if (userObject.money < ad.appearances * 1000) {
                 throw new Error("Not enough money.");
             }
+            let now = Date.now()
+
+            let payment = Payment({createdBy: req.user._id, amount: ad.appearances * 1000, timeStamp: now})
+            payment.save();
+
             userObject.money -= ad.appearances * 1000
             userObject.save()
 
@@ -102,7 +108,7 @@ exports.createAd = async(req, res) => {
 
             if (ad.isSubscription) {
                 ad.maxAppearances = ad.appearances
-                ad.lastPayed = Date.now()
+                ad.lastPayed = now
             }
 
             const savedAd = new Advertisement(ad);

@@ -1,5 +1,6 @@
 const Advertisement = require("../03_models/Advertisement");
 const User = require("../03_models/User");
+const Payment = require("../03_models/Payment");
 const mongoose = require("mongoose");
 
 
@@ -16,11 +17,19 @@ exports.auditSubscriptions = async() => {
                     throw new Error("Not enough money.");
                     return;
                 }
+                let now = Date.now();
                 advertisement.createdBy.money -= advertisement.appearances * 1000;
                 advertisement.createdBy.save();
                 advertisement.appearanceLeft = advertisement.maxAppearances;
-                advertisement.lastPayed = Date.now();
+                advertisement.lastPayed = now;
                 advertisement.save()
+
+                let payment = Payment({
+                    createdBy: advertisement.createdBy, 
+                    amount: advertisement.appearances * 1000, 
+                    timeStamp: now
+                })
+                payment.save();
             }
 
         } catch (err) {
