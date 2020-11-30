@@ -9,10 +9,11 @@
         {{ data.item.from.hours + ":00 - " + data.item.to.hours + ":00" }}
       </template>
       <template #cell(countries)="data">
-        {{ data.item.countries.join(', ') }}
+        {{ data.item.countries.join(", ") }}
       </template>
       <template #cell(appearanceLeft)="data">
-        {{ data.item.appearanceLeft}} {{ data.item.isSubscription ? "/month" : ""}}
+        {{ data.item.appearanceLeft }}
+        {{ data.item.isSubscription ? "/month" : "" }}
       </template>
       <template #cell(actions)="data">
         <b-button
@@ -39,12 +40,6 @@
 import Swal from "sweetalert2";
 import { Bus } from "@/bus.js";
 
-var tokenInHeader = {
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("jwt"),
-  },
-};
-
 export default {
   data() {
     return {
@@ -58,9 +53,15 @@ export default {
         { key: "actions" },
       ],
       advertisments: [],
+      tokenInHeader: {},
     };
   },
   created: function () {
+    this.tokenInHeader = {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("jwt"),
+      },
+    };
     this.fetchAdvertisements();
     this.listenToEvents();
   },
@@ -69,7 +70,7 @@ export default {
       try {
         let response = await this.$http.get(
           "/advertisement/advertisements",
-          tokenInHeader
+          this.tokenInHeader
         );
         this.advertisments = response.data.advertisements;
       } catch (err) {
@@ -86,22 +87,21 @@ export default {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            await this.$http.delete(
-              "/advertisement/" + _id,
-              tokenInHeader
-            );
-            await this.fetchAdvertisements()
-          } catch (err) {
-            throw new Error(err.response.data.error)
-          }
-          Swal.fire("Deleted!", "", "success");
-        }
-      }).catch(err => {
-        Swal.fire("Error", err.message, "error");
       })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await this.$http.delete("/advertisement/" + _id, this.tokenInHeader);
+              await this.fetchAdvertisements();
+            } catch (err) {
+              throw new Error(err.response.data.error);
+            }
+            Swal.fire("Deleted!", "", "success");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Error", err.message, "error");
+        });
     },
 
     rowClass(item, type) {
